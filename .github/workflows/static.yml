@@ -1,0 +1,39 @@
+# Munkafolyamat neve
+name: Deploy to GitHub Pages
+
+# A munkafolyamat indításának feltétele: push a 'main' branch-re
+on:
+  push:
+    branches:
+      - main
+
+# Engedélyek megadása a GITHUB_TOKEN számára a publikáláshoz
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# A munkafolyamat lépései
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. lépés: A kód letöltése a repository-ból
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. lépés: A GitHub Pages beállítása
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      # 3. lépés: A 'public' mappa tartalmának feltöltése artefaktumként
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # A feltöltendő mappa elérési útja
+          path: './public'
+
+      # 4. lépés: A feltöltött tartalom publikálása
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
